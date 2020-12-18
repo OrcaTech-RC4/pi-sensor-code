@@ -1,4 +1,4 @@
-from time import sleep
+import time
 import requests
 import RPi.GPIO as gpio
 from pathlib import Path
@@ -18,6 +18,7 @@ gpio.setmode(gpio.BOARD)
 for i in range(4):
     gpio.setup(pin[i], gpio.IN)
 
+
 # Load floorcode from config file
 path = Path.home().joinpath("config.txt")
 file = path.open()
@@ -27,7 +28,7 @@ floorcode = floorcode.strip()
 t = dt.datetime.now() # Save the current time to a variable ('t')
 
 while(True):
-    statusChanged = False;
+    statusChanged = False
 
 
     for i in range(4):
@@ -50,32 +51,36 @@ while(True):
         if (offcount[i] >= 8 and status[i] != 0):
             status[i] = 0
             offcount[i] = 0
-            statusChanged = True;
+            statusChanged = True
         elif (oncount[i] >= 8 and status[i] != 1):
             oncount[i] = 0
             status[i] = 1
-            statusChanged = True;
+            statusChanged = True
         elif (offcount[i] > 1 and status[i] == 1):
            status[i] = 2
-           statusChanged = True;
+           statusChanged = True
         elif (oncount[i] > 1 and status[i] == 0):
             status[i] = 2
-            statusChanged = True;
+            statusChanged = True
 
     res = ''.join(str(e) for e in status)
 
     
-    delta = dt.datetime.now()-t
-    if delta.seconds >= 10 or statusChanged: #Update a new row every minute, or when status is changed
+    delta = dt.datetime.now() - t
+    if delta.seconds >= 5 * 60 or statusChanged: # update a new row every 5 minutes, or when status is changed
         print('hi')
-        t = dt.datetime.now()  # Update 't' variable to new time
+        t = dt.datetime.now()  # update 't' variable to new time
     
-        timestampObj = calendar.timegm(time.gmtime()) #for timestamp formatting
+        timestampObj = calendar.timegm(time.gmtime()) # for timestamp formatting
         timestamp = dt.datetime.fromtimestamp(timestampObj).isoformat()
         
         with open('logging.csv','a') as csvfile:
             writer = csv.writer(csvfile)
-            writer.writerow([timestamp,status[0],status[1],status[2],status[3],statusChanged]) #append a new row containing timestamp and status of 4 machines, statusChanged    
+
+            # append a new row containing timestamp and status of 4 machines, statusChanged
+            # example row: 0,1,2,0,True
+            writer.writerow([timestamp,status[0],status[1],status[2],status[3],statusChanged])
+            csvfile.close()
     
     if (statusChanged):
         print("change detected")
@@ -87,4 +92,4 @@ while(True):
         })
         statusChanged = False
 
-    sleep(0.15)
+    time.sleep(10)
