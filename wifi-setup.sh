@@ -45,6 +45,7 @@ update_config=1
 country=$countrycode
 
 network={
+    priority=1
     ssid=\"NUS_STU_2-4GHz\"
     key_mgmt=WPA-EAP
     eap=PEAP
