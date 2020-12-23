@@ -4,8 +4,8 @@ After=multi-user.target
  
 [Service]
 Type=simple
-ExecStart=/usr/bin/python -u /home/pi/pi-sensor-code/sensor.py
-WorkingDirectory=/home/pi/pi-sensor-code
+ExecStart=/usr/bin/python -u /home/pi/laundrybot-raspi/sensor.py
+WorkingDirectory=/home/pi/laundrybot-raspi
 Restart=on-abort
  
 [Install]
