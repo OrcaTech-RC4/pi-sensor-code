@@ -49,7 +49,7 @@ network={
     ssid=\"NUS_STU_2-4GHz\"
     key_mgmt=WPA-EAP
     eap=PEAP
-    identity=$userid
+    identity=\"$userid\"
     password=hash:$passhash
     phase2=\"auth=MSCHAPV2\"
     }"
