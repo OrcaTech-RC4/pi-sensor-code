@@ -4,7 +4,8 @@ After=multi-user.target
  
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /home/pi/sensor.py
+ExecStart=/usr/bin/python -u /home/pi/pi-sensor-code/sensor.py
+WorkingDirectory=/home/pi/pi-sensor-code
 Restart=on-abort
  
 [Install]
