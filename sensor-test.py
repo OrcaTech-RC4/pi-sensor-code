@@ -1,6 +1,7 @@
 import time
 import requests
 import RPi.GPIO as gpio
+from pathlib import Path
 import datetime as dt
 import csv
 import calendar
@@ -12,8 +13,6 @@ oncount = [0, 0, 0, 0]
 offcount = [0, 0, 0, 0]
 readout = [0, 0, 0, 0]
 
-floorcode = 0
-
 # Setup pins
 gpio.setmode(gpio.BOARD)
 for i in range(4):
@@ -21,9 +20,10 @@ for i in range(4):
 
 
 # Load floorcode from config file
-with open('config.txt', 'r') as f:
-    floorcode = f.read()
-    floorcode = floorcode.strip()
+path = Path.home().joinpath("config.txt")
+file = path.open()
+floorcode = file.read()
+floorcode = floorcode.strip()
 
 t = dt.datetime.now() # Save the current time to a variable ('t')
 
@@ -65,10 +65,11 @@ while(True):
 
     res = ''.join(str(e) for e in status)
 
+    print(res)
     
     delta = dt.datetime.now() - t
     if delta.seconds >= 5 * 60 or statusChanged: # update a new row every 5 minutes, or when status is changed
-        print('Writing to log - ' + str(status))
+        print('hi')
         t = dt.datetime.now()  # update 't' variable to new time
     
         timestampObj = calendar.timegm(time.gmtime()) # for timestamp formatting
@@ -83,12 +84,13 @@ while(True):
             csvfile.close()
     
     if (statusChanged):
-        print("Change detected " + res)
-        # requests.post("https://us-central1-rc4laundrybot.cloudfunctions.net/writeData",
-        # data = {
-        #     "floor":floorcode,
-        #     "data":res
-        # })
+        print("change detected")
+        print(res)
+        requests.post("https://us-central1-rc4laundrybot.cloudfunctions.net/writeData",
+        data = {
+            "floor":floorcode,
+            "data":res
+        })
         statusChanged = False
 
     time.sleep(0.15)
