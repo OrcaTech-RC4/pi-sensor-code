@@ -83,12 +83,13 @@ while(True):
             csvfile.close()
     
     if (statusChanged):
-        print("Change detected " + res)
-        # requests.post("https://us-central1-rc4laundrybot.cloudfunctions.net/writeData",
-        # data = {
-        #     "floor":floorcode,
-        #     "data":res
-        # })
+        print("change detected")
+        print(res)
+        requests.post("http://188.166.181.174:5000/api/update",
+        data = {
+            "floor":floorcode,
+            "data":res
+        })
         statusChanged = False
 
     time.sleep(0.15)
